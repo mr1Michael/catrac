@@ -14,6 +14,13 @@ class Categories:
 class Codes:
     code_count = 0  # this counts the number of different types of objects you have created
 
+    @staticmethod
+    def export_csv(self, file_loaction, ):
+        pass
+
+    def import_csv(self, file_loaction):
+        pass
+
     def __init__(self, stock_code, description, brand, tiers):
         """
         :param stock_code: identifier for the product
@@ -88,8 +95,6 @@ class Codes:
                 return
 
 
-    def export_csv(self, file_loaction, ):
-        pass
 
 if __name__ == "__main__":
     energade = Codes(stock_code="AP19368",
@@ -98,6 +103,14 @@ if __name__ == "__main__":
                           tiers=Categories(tier1="Sports & Energy",
                                                 tier2="Cold Beverages",
                                                 tier3="Beverages"))
+
+
+    viagra = Codes(stock_code="mycoxaflopin",
+                   description="Viagra - 24x500ml",
+                   brand="Viagra",
+                   tiers=Categories(tier1="sports",
+                              tier2="medical",
+                              tier3="retirement"))
 
     energade.add_batch("rachel's juices", 15 , "2021-03-15")
 
