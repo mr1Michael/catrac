@@ -20,6 +20,13 @@ a = random.randint(1,10)
 # creating functions
 
 def adding_numbers(number1, number2, number3):
+    """
+
+    :param number1: first number to add
+    :param number2: second number to add
+    :param number3: third number to add
+    :return:
+    """
     answer = number1 + number2 + number3
     return answer
 

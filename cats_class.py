@@ -1,6 +1,6 @@
 import datetime
 
-class Apex_Categories:
+class Categories:
     def __init__(self, tier1, tier2, tier3):
         """
         :param tier1: main group
@@ -11,9 +11,8 @@ class Apex_Categories:
         self.tier2 = tier2
         self.tier3 = tier3
 
-class Apex_Codes:
+class Codes:
     code_count = 0  # this counts the number of different types of objects you have created
-
 
     def __init__(self, stock_code, description, brand, tiers):
         """
@@ -30,10 +29,13 @@ class Apex_Codes:
         self.batches = []  # I have created batches as a list, you'll understand in a second
         self.batch_history = []
 
-        Apex_Codes.code_count += 1  # Each time you create a new object I keep track of the count
+        Codes.code_count = Codes.code_count + 1  # Each time you create a new object I keep track of the count
 
 
-    def add_batch(self, batch_code, quantity, date_added=datetime.datetime.today()):
+    def add_batch(self, batch_code,
+                  quantity,
+                  date_added=datetime.datetime.today(),
+                  expiry_date=datetime.datetime.today()):
         """
         :param batch_code: batch code as a string or integer
         :param quantity: quantity of the batch as an integer
@@ -44,7 +46,7 @@ class Apex_Codes:
             date_added = datetime.datetime.strptime(date_added, "%Y-%m-%d").date()
         if batch_code not in [i[0] for i in self.batches] and batch_code not in [i[0] for i in self.batch_history]:
             # above, check if the batch is already rung through or is already there
-            self.batches.append(batch_code, quantity, date_added) # i made this a tuple to simplify
+            self.batches.append((batch_code, quantity, date_added)) # i made this a tuple to simplify
             self.total_stock += quantity
             if datetime.datetime.today() != date_added:
                 self.batches.sort(key=lambda i: i[-1])
@@ -70,7 +72,6 @@ class Apex_Codes:
                 else:
                     consumed = True
         else:
-            # add error handling is batch does not exist
             if batch_code not in [i[0] for i in self.batches]:
                 self.consume_stock(quantity)
                 return
@@ -86,9 +87,20 @@ class Apex_Codes:
                 self.consume_stock(quantity)
                 return
 
-energade = Apex_Codes(stock_code="AP19368",
-                      description="Energade - Blueberry 24x500ml",
-                      brand="Energade",
-                      tiers=Apex_Categories(tier1="Sports & Energy",
-                                            tier2="Cold Beverages",
-                                            tier3="Beverages"))
+
+    def export_csv(self, file_loaction, ):
+        pass
+
+if __name__ == "__main__":
+    energade = Codes(stock_code="AP19368",
+                          description="Energade - Blueberry 24x500ml",
+                          brand="Energade",
+                          tiers=Categories(tier1="Sports & Energy",
+                                                tier2="Cold Beverages",
+                                                tier3="Beverages"))
+
+    energade.add_batch("rachel's juices", 15 , "2021-03-15")
+
+    energade.consume_stock(quantity = 2)
+    energade.add_batch("rachel's juices", 15 , "2021-03-15")
+
