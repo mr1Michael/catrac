@@ -126,6 +126,7 @@ class App:
             ), width=200).pack(pady=10)
         ctk.CTkButton(tab, text="Import CSV", command=self.import_csv, width=200).pack(pady=10)
 
+        ctk.CTkButton(tab, text="Import Matrix Data", command=self.import_matrix_data, width=200).pack(pady=10)
 
 
     def export_csv(self):
@@ -222,6 +223,50 @@ class App:
                     new_item_id = self.table.insert("", "end", values=r)
                     stockcode_to_itemid[stockcode] = new_item_id
 
+            # This moves you back to the information tab when you are finished loading the data
+            self.tabs.set("information")
+        except Exception as e:
+            messagebox.showerror("Import failed", str(e))
+
+    def import_matrix_data(self):
+        filename = filedialog.askopenfilename(
+            filetypes=[("CSV files", "*.csv")]
+        )
+        if not filename:
+            return
+
+        # adjust expected header/order to match master CSV
+        expected_header = ["StockCode", "Category", "Department", "Group"]
+
+        try:
+            with open(filename, "r", newline="", encoding="utf-8") as f:
+                reader = csv.reader(f, delimiter=";")
+                rows = list(reader)
+
+            if not rows:
+                return
+
+            # If header exists, skip it
+            header = rows[0]
+            start_idx = 1 if header == expected_header else 0
+            data_rows = rows[start_idx:]
+            if not data_rows:
+                return
+            for r in data_rows:
+                r = (r + [""] * 4)[:4]
+
+                key = str(r[0]).strip()  # e.g. "ENERGADE"
+                if not key:
+                    continue
+
+                category = str(r[1]).strip()
+                department = str(r[2]).strip()
+                group = str(r[3]).strip()
+
+                ApexEngine.BrandRules[key] = (category, department, group)
+
+            messagebox.showinfo("Import complete", f"Loaded {len(ApexEngine.BrandRules)} BrandRules rows.")
+            self.tabs.set("information")
         except Exception as e:
             messagebox.showerror("Import failed", str(e))
 
@@ -245,6 +290,8 @@ class App:
                 values=(code, description, brand, item[3], item[4], item[5]), # this is user added data not master data
                 tags=tag
             )
+        # This moves you back to the information tab when you are finished loading the data
+        self.tabs.set("information")
 
 
 if __name__ == "__main__":
